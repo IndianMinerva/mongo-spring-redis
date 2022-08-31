@@ -2,6 +2,7 @@ package com.factory.service.impl
 
 import com.factory.entity.ShortUrlEntity
 import com.factory.service.ShortUrlService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.mongodb.repository.MongoRepository
@@ -12,13 +13,16 @@ import java.util.*
 
 @Service
 class ShortUrlServiceImpl @Autowired constructor(private val shortUrlRepository: ShortUrlRepository) : ShortUrlService {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun saveShortUrlEntity(url: String): ShortUrlEntity {
         val shortUrl = encodeToID(url = url);
         val maybeShortUrlEntity: Optional<ShortUrlEntity> = shortUrlRepository.findById(shortUrl)
         return if (maybeShortUrlEntity.isPresent) {
+            logger.info("Retrieving the URL '{}' from the database", url)
             maybeShortUrlEntity.get()
         } else {
+            logger.info("Storing the URL '{}' to the DB.", url)
             shortUrlRepository.save(ShortUrlEntity(url = url, shortUrl = shortUrl))
         }
         //.map { shortUrlEntity -> shortUrlEntity }
@@ -28,6 +32,7 @@ class ShortUrlServiceImpl @Autowired constructor(private val shortUrlRepository:
 
     @Cacheable(value = ["urlsCache"], key = "#id")
     override fun getShortUrlEntity(id: String): Optional<ShortUrlEntity> {
+        logger.info("Getting the URL from the database. URL-hash: {}", id)
         return shortUrlRepository.findById(id)
     }
 
