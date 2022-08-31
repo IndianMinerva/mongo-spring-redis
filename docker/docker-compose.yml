@@ -1,0 +1,46 @@
+version: '3'
+networks:
+  app-tier:
+    driver: bridge
+services:
+  cache:
+    container_name: cache
+    image: 'redis:alpine'
+    restart: always
+    hostname: cache
+    ports:
+      - '6379:6379'
+    volumes:
+      - cache:/data
+    networks:
+      - app-tier
+  mongodb:
+    image: 'mongo:latest'
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '27017:27017'
+    volumes:
+      - /var/lib/mongodb/data
+    networks:
+      - app-tier
+  my-app:
+    image: 'dkb/shorty:latest'
+    ports:
+      - '8080:8080'
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      SPRING_REDIS_HOST: cache
+    networks:
+      - app-tier
+    depends_on:
+      - mongodb
+      - cache
+volumes:
+  mongodb:
+    driver: local
+  cache:
+    driver: local
