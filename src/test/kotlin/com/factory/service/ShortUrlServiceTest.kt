@@ -1,7 +1,7 @@
 package com.factory.service
 
 import com.factory.entity.ShortUrlEntity
-import com.factory.repository.ShortUrlRepository
+import com.factory.service.impl.ShortUrlRepository
 import com.factory.service.impl.ShortUrlServiceImpl
 import jdk.jfr.Description
 import org.junit.jupiter.api.Test
@@ -17,7 +17,8 @@ class ShortUrlServiceTest {
         //Given
         val shortUrl = "abc"
         val shortUrlRepository: ShortUrlRepository = Mockito.mock(
-            ShortUrlRepository::class.java)
+            ShortUrlRepository::class.java
+        )
         Mockito.`when`(shortUrlRepository.findById(shortUrl)).thenReturn(Optional.empty())
         val shortUrlService: ShortUrlService = ShortUrlServiceImpl(shortUrlRepository);
 
@@ -34,7 +35,8 @@ class ShortUrlServiceTest {
         //Given
         val url = "google.com"
         val shortUrlRepository: ShortUrlRepository = Mockito.mock(
-            ShortUrlRepository::class.java)
+            ShortUrlRepository::class.java
+        )
         val shortUrlService: ShortUrlServiceImpl = ShortUrlServiceImpl(shortUrlRepository);
         val shortUrl = shortUrlService.encodeToID(url)
         val shortUrlEntity = ShortUrlEntity(shortUrl, url)
@@ -55,7 +57,8 @@ class ShortUrlServiceTest {
         //Given
         val url = "google.com"
         val shortUrlRepository: ShortUrlRepository = Mockito.mock(
-            ShortUrlRepository::class.java)
+            ShortUrlRepository::class.java
+        )
         val shortUrlService: ShortUrlServiceImpl = ShortUrlServiceImpl(shortUrlRepository);
         val shortUrl = shortUrlService.encodeToID(url)
         val shortUrlEntity = ShortUrlEntity(shortUrl, url)
