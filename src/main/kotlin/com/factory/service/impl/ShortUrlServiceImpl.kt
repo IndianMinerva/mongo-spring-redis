@@ -28,7 +28,6 @@ class ShortUrlServiceImpl @Autowired constructor(private val shortUrlRepository:
 
     @Cacheable(value = ["urlsCache"], key = "#id")
     override fun getShortUrlEntity(id: String): Optional<ShortUrlEntity> {
-        println("Hello")
         return shortUrlRepository.findById(id)
     }
 
